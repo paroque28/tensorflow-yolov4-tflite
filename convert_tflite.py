@@ -62,6 +62,10 @@ def save_tflite():
     model.summary()
     utils.load_weights(model, FLAGS.weights)
 
+    # Save Model, including Frozen graph
+    model.save('./model')
+
+
   converter = tf.lite.TFLiteConverter.from_keras_model(model)
   if FLAGS.quantize_mode == 'int8':
     converter.optimizations = [tf.lite.Optimize.DEFAULT]
