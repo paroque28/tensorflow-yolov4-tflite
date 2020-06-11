@@ -61,7 +61,15 @@ def main(_argv):
                     bbox_tensor = decode(fm, NUM_CLASS, i)
                     bbox_tensors.append(bbox_tensor)
                 model = tf.keras.Model(input_layer, bbox_tensors)
+<<<<<<< HEAD
                 utils.load_weights(model, FLAGS.weights)
+=======
+                
+                if FLAGS.weights.split(".")[len(FLAGS.weights.split(".")) - 1] == "weights":
+                    utils.load_weights(model, FLAGS.weights)
+                else:
+                    model.load_weights(FLAGS.weights).expect_partial()
+>>>>>>> 2b8099f09170f41620da47ca48111b8f39cc4f3f
 
         model.summary()
     else:
@@ -82,7 +90,11 @@ def main(_argv):
         else:
             raise ValueError("No image! Try with another video format")
         frame_size = frame.shape[:2]
+<<<<<<< HEAD
         image_data = utils.image_preporcess(np.copy(frame), [input_size, input_size])
+=======
+        image_data = utils.image_preprocess(np.copy(frame), [input_size, input_size])
+>>>>>>> 2b8099f09170f41620da47ca48111b8f39cc4f3f
         image_data = image_data[np.newaxis, ...].astype(np.float32)
         prev_time = time.time()
 

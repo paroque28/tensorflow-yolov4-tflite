@@ -22,7 +22,7 @@ def representative_data_gen():
     if os.path.exists(fimage[input_value]):
       original_image=cv2.imread(fimage[input_value])
       original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
-      image_data = utils.image_preporcess(np.copy(original_image), [FLAGS.input_size, FLAGS.input_size])
+      image_data = utils.image_preprocess(np.copy(original_image), [FLAGS.input_size, FLAGS.input_size])
       img_in = image_data[np.newaxis, ...].astype(np.float32)
       print(input_value)
       yield [img_in]
@@ -58,15 +58,17 @@ def save_tflite():
       model = tf.keras.Model(input_layer, bbox_tensors)
       utils.load_weights(model, FLAGS.weights)
 
-    model = tf.keras.Model(input_layer, bbox_tensors)
-    model.summary()
-    utils.load_weights(model, FLAGS.weights)
+  model.summary()
 
     # Save Model, including Frozen graph
     model.save('./model')
 
 
   converter = tf.lite.TFLiteConverter.from_keras_model(model)
+
+  if tf.__version__ >= '2.2.0':
+    converter.experimental_new_converter = False
+
   if FLAGS.quantize_mode == 'int8':
     converter.optimizations = [tf.lite.Optimize.DEFAULT]
   elif FLAGS.quantize_mode == 'float16':
